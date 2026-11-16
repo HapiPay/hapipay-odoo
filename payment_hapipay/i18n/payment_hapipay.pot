@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20261112\n"
+"Project-Id-Version: Odoo Server 19.0-20261112\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-16 04:36+0000\n"
-"PO-Revision-Date: 2026-11-16 04:36+0000\n"
+"POT-Creation-Date: 2026-11-16 04:50+0000\n"
+"PO-Revision-Date: 2026-11-16 04:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -61,6 +61,12 @@ msgid ""
 msgstr ""
 
 #. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__display_name
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_transaction__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: payment_hapipay
 #: model:ir.model.fields.selection,name:payment_hapipay.selection__payment_provider__code__hapipay
 #: model:payment.provider,name:payment_hapipay.payment_provider_hapipay
 msgid "HapiPay"
@@ -82,14 +88,6 @@ msgid "HapiPay API key"
 msgstr ""
 
 #. module: payment_hapipay
-#. odoo-python
-#: code:addons/payment_hapipay/models/payment_transaction.py:0
-msgid ""
-"HapiPay confirmed a payment of %s, which does not match this transaction. "
-"Check it in your HapiPay space."
-msgstr ""
-
-#. module: payment_hapipay
 #: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
 msgid "HapiPay space"
 msgstr ""
@@ -102,6 +100,12 @@ msgstr ""
 #. module: payment_hapipay
 #: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__hapipay_webhook_secret
 msgid "HapiPay webhook secret"
+msgstr ""
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__id
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_transaction__id
+msgid "ID"
 msgstr ""
 
 #. module: payment_hapipay
@@ -125,12 +129,6 @@ msgid ""
 msgstr ""
 
 #. module: payment_hapipay
-#. odoo-python
-#: code:addons/payment_hapipay/models/payment_transaction.py:0
-msgid "No transaction found matching reference %s."
-msgstr ""
-
-#. module: payment_hapipay
 #: model:ir.model,name:payment_hapipay.model_payment_provider
 msgid "Payment Provider"
 msgstr ""
@@ -138,12 +136,6 @@ msgstr ""
 #. module: payment_hapipay
 #: model:ir.model,name:payment_hapipay.model_payment_transaction
 msgid "Payment Transaction"
-msgstr ""
-
-#. module: payment_hapipay
-#. odoo-python
-#: code:addons/payment_hapipay/models/payment_transaction.py:0
-msgid "Received data with missing reference."
 msgstr ""
 
 #. module: payment_hapipay

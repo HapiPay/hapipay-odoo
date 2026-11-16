@@ -33,7 +33,7 @@ class HapiPayCommon(PaymentCommon):
             'hapipay_api_key': 'hpc_test_abcdefghijkl_' + 'x' * 40,
             'hapipay_webhook_secret': SECRET,
         })
-        cls.currency = cls._prepare_currency('XAF')
+        cls.currency = cls._enable_currency('XAF')
         cls.amount = 25000
         cls.payment_method_id = cls.env.ref('payment_hapipay.payment_method_hapipay').id
 
@@ -92,33 +92,42 @@ class TestHapiPay(HapiPayCommon):
 
     def test_amount_with_cents_is_refused(self):
         # En FCFA, Odoo arrondit déjà à l'unité : seuls l'euro et le dollar ont des centimes.
-        euro = self._prepare_currency('EUR')
+        euro = self.currency_euro
         tx = self._create_transaction(flow='redirect', amount=1111.5, currency_id=euro.id)
-        with patch(MAKE_REQUEST) as request, self.assertRaises(ValidationError):
-            tx._get_specific_rendering_values(None)
+        with patch(MAKE_REQUEST) as request:
+            self.assertEqual(tx._get_specific_rendering_values(None), {})
         request.assert_not_called()
+        self.assertEqual(tx.state, 'error')
+
+    def test_api_refusal_is_an_error(self):
+        tx = self._create_transaction(flow='redirect')
+        with patch(MAKE_REQUEST, side_effect=ValidationError("HapiPay: refus")):
+            self.assertEqual(tx._get_specific_rendering_values(None), {})
+        self.assertEqual(tx.state, 'error')
 
     def test_paid_notification_confirms(self):
         tx = self._create_transaction(flow='redirect')
-        tx._handle_notification_data('hapipay', self._paid(tx))
+        tx._process('hapipay', self._paid(tx))
         self.assertEqual(tx.state, 'done')
         self.assertEqual(tx.provider_reference, 'TX123')
 
-    @mute_logger('odoo.addons.payment_hapipay.models.payment_transaction')
-    def test_other_amount_stays_pending(self):
+    def test_other_amount_is_an_error(self):
+        # Odoo 19 vérifie lui-même le montant et la devise : un écart passe la transaction en erreur.
         tx = self._create_transaction(flow='redirect')
-        tx._handle_notification_data('hapipay', self._paid(tx, montant=24000))
-        self.assertEqual(tx.state, 'pending')
-        self.assertIn('24', tx.state_message)
+        tx._process('hapipay', self._paid(tx, montant=24000))
+        self.assertEqual(tx.state, 'error')
+        tx2 = self._create_transaction(flow='redirect', reference='autre-ref')
+        tx2._process('hapipay', self._paid(tx2, devise='EUR'))
+        self.assertEqual(tx2.state, 'error')
 
     def test_payment_to_check_stays_pending(self):
         tx = self._create_transaction(flow='redirect')
-        tx._handle_notification_data('hapipay', self._paid(tx, evenement='paiement.a_verifier'))
+        tx._process('hapipay', self._paid(tx, evenement='paiement.a_verifier'))
         self.assertEqual(tx.state, 'pending')
 
     def test_failed_payment_keeps_the_transaction_open(self):
         tx = self._create_transaction(flow='redirect')
-        tx._handle_notification_data('hapipay', self._paid(tx, evenement='paiement.echoue'))
+        tx._process('hapipay', self._paid(tx, evenement='paiement.echoue'))
         self.assertEqual(tx.state, 'draft')
 
     def test_return_asks_hapipay(self):

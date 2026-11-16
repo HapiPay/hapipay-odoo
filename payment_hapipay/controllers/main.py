@@ -4,7 +4,6 @@ import json
 import logging
 
 from odoo import http
-from odoo.exceptions import ValidationError
 from odoo.http import request
 
 from odoo.addons.payment_hapipay import const
@@ -61,10 +60,9 @@ class HapiPayController(http.Controller):
             # on accuse réception pour éviter les relances.
             return request.make_json_response({'ignore': True})
 
-        try:
-            transactions._handle_notification_data('hapipay', dict(data, evenement=name))
-        except ValidationError:
-            _logger.exception("HapiPay : webhook non traité ; accusé de réception quand même")
+        tx_sudo = transactions._process('hapipay', dict(data, evenement=name))
+        if not tx_sudo:
+            # Référence de cet Odoo, mais transaction introuvable : accusé de réception quand même.
             return request.make_json_response({'ignore': True})
 
         return request.make_json_response({'ok': True})

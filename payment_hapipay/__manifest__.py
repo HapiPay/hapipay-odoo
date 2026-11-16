@@ -2,7 +2,7 @@
 
 {
     'name': "Payment Provider: HapiPay",
-    'version': '18.0.0.1.0',
+    'version': '19.0.0.1.0',
     'category': 'Accounting/Payment Providers',
     'sequence': 350,
     'summary': "Mobile money, card and PayPal payments with HapiPay. The money goes straight to "

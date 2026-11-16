@@ -49,24 +49,30 @@ class PaymentTransaction(models.Model):
         # HapiPay compte en unités entières de la devise (FCFA, ariary, francs congolais…).
         amount = round(self.amount)
         if float_compare(self.amount, amount, precision_digits=6) != 0:
-            raise ValidationError("HapiPay: " + _(
+            self._set_error("HapiPay: " + _(
                 "This amount has cents: HapiPay only accepts whole amounts."
             ))
+            return {}
 
         lang = (self.partner_lang or self.env.lang or '')[:2]
         base_url = self.provider_id.get_base_url().rstrip('/')
-        data = self.provider_id._hapipay_make_request('POST', 'liens', {
-            'reference': self._hapipay_reference(),
-            'titre': (self.reference or '')[:120],
-            'description': self.company_id.name,
-            'montant': int(amount),
-            'devise': self.currency_id.name,
-            'usage_unique': True,
-            'url_retour': base_url + '/payment/hapipay/return?' + urlencode({'reference': self.reference}),
-            'langue': lang if lang in const.LANGUAGES else None,
-        })
+        try:
+            data = self.provider_id._hapipay_make_request('POST', 'liens', {
+                'reference': self._hapipay_reference(),
+                'titre': (self.reference or '')[:120],
+                'description': self.company_id.name,
+                'montant': int(amount),
+                'devise': self.currency_id.name,
+                'usage_unique': True,
+                'url_retour': base_url + '/payment/hapipay/return?' + urlencode({'reference': self.reference}),
+                'langue': lang if lang in const.LANGUAGES else None,
+            })
+        except ValidationError as error:
+            self._set_error(str(error))
+            return {}
         if not data.get('url') or not data.get('code'):
-            raise ValidationError("HapiPay: " + _("The payment page could not be created."))
+            self._set_error("HapiPay: " + _("The payment page could not be created."))
+            return {}
 
         # Le code de la page sert à demander son état au retour du client.
         self.provider_reference = data['code']
@@ -84,7 +90,7 @@ class PaymentTransaction(models.Model):
             return
 
         if link.get('etat') == 'paye':
-            self._handle_notification_data('hapipay', {
+            self._process('hapipay', {
                 'evenement': 'paiement.reussi',
                 'reference': link.get('reference'),
                 'id': link.get('paiement'),
@@ -95,47 +101,35 @@ class PaymentTransaction(models.Model):
             # Le client a peut-être validé sur son téléphone : la confirmation va suivre.
             self._set_pending()
 
-    def _get_tx_from_notification_data(self, provider_code, notification_data):
-        tx = super()._get_tx_from_notification_data(provider_code, notification_data)
-        if provider_code != 'hapipay' or len(tx) == 1:
-            return tx
+    @api.model
+    def _extract_reference(self, provider_code, payment_data):
+        """ Référence Odoo, tirée de la référence de la page HapiPay. """
+        if provider_code != 'hapipay':
+            return super()._extract_reference(provider_code, payment_data)
+        return self._hapipay_odoo_reference(payment_data.get('reference'))
 
-        reference = self._hapipay_odoo_reference(notification_data.get('reference'))
-        if not reference:
-            raise ValidationError("HapiPay: " + _("Received data with missing reference."))
-
-        tx = self.search([('reference', '=', reference), ('provider_code', '=', 'hapipay')])
-        if not tx:
-            raise ValidationError(
-                "HapiPay: " + _("No transaction found matching reference %s.", reference)
-            )
-        return tx
-
-    def _process_notification_data(self, notification_data):
-        super()._process_notification_data(notification_data)
+    def _extract_amount_data(self, payment_data):
+        """ Montant et devise d'un paiement réussi : Odoo vérifie qu'ils sont ceux de la
+        transaction, sinon il la passe en erreur. Les autres événements n'en ont pas besoin. """
         if self.provider_code != 'hapipay':
-            return
+            return super()._extract_amount_data(payment_data)
+        if payment_data.get('evenement') != 'paiement.reussi':
+            return None
+        return {
+            'amount': float(payment_data.get('montant') or 0),
+            'currency_code': (payment_data.get('devise') or '').upper(),
+            'precision_digits': 0,
+        }
 
-        event = notification_data.get('evenement')
+    def _apply_updates(self, payment_data):
+        if self.provider_code != 'hapipay':
+            return super()._apply_updates(payment_data)
+
+        event = payment_data.get('evenement')
         if event == 'paiement.reussi':
-            # Le montant et la devise doivent être ceux de la transaction.
-            amount_ok = int(notification_data.get('montant') or -1) == int(round(self.amount))
-            currency_ok = (notification_data.get('devise') or '').upper() == self.currency_id.name
-            if not (amount_ok and currency_ok):
-                _logger.warning(
-                    "HapiPay : montant ou devise différent pour %s (%s %s)",
-                    self.reference, notification_data.get('montant'), notification_data.get('devise'),
-                )
-                self._set_pending(state_message=_(
-                    "HapiPay confirmed a payment of %s, which does not match this transaction. "
-                    "Check it in your HapiPay space.",
-                    const.format_amount(notification_data.get('montant') or 0, notification_data.get('devise')),
-                ))
-                return
-
             # Une fois payé, la référence fournisseur devient le numéro de transaction HapiPay.
-            if notification_data.get('id'):
-                self.provider_reference = notification_data['id']
+            if payment_data.get('id'):
+                self.provider_reference = payment_data['id']
             self._set_done()
         elif event == 'paiement.a_verifier':
             self._set_pending(state_message=_(

@@ -87,16 +87,6 @@ msgid "HapiPay API key"
 msgstr "Clé d'API HapiPay"
 
 #. module: payment_hapipay
-#. odoo-python
-#: code:addons/payment_hapipay/models/payment_transaction.py:0
-msgid ""
-"HapiPay confirmed a payment of %s, which does not match this transaction. "
-"Check it in your HapiPay space."
-msgstr ""
-"HapiPay a confirmé un paiement de %s, qui ne correspond pas à cette "
-"transaction. Vérifiez-le dans votre espace HapiPay."
-
-#. module: payment_hapipay
 #: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
 msgid "HapiPay space"
 msgstr "espace HapiPay"
@@ -136,12 +126,6 @@ msgstr ""
 "être en HTTPS : une adresse redirigée est refusée."
 
 #. module: payment_hapipay
-#. odoo-python
-#: code:addons/payment_hapipay/models/payment_transaction.py:0
-msgid "No transaction found matching reference %s."
-msgstr "Aucune transaction ne correspond à la référence %s."
-
-#. module: payment_hapipay
 #: model:ir.model,name:payment_hapipay.model_payment_provider
 msgid "Payment Provider"
 msgstr "Fournisseur de paiement"
@@ -150,12 +134,6 @@ msgstr "Fournisseur de paiement"
 #: model:ir.model,name:payment_hapipay.model_payment_transaction
 msgid "Payment Transaction"
 msgstr "Transaction"
-
-#. module: payment_hapipay
-#. odoo-python
-#: code:addons/payment_hapipay/models/payment_transaction.py:0
-msgid "Received data with missing reference."
-msgstr "Données reçues sans référence."
 
 #. module: payment_hapipay
 #. odoo-python
@@ -245,3 +223,15 @@ msgstr "production"
 #: code:addons/payment_hapipay/models/payment_provider.py:0
 msgid "test (simulated payments)"
 msgstr "test (paiements simulés)"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__display_name
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_transaction__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__id
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_transaction__id
+msgid "ID"
+msgstr "ID"
