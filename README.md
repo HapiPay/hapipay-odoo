@@ -1,6 +1,6 @@
 # HapiPay pour Odoo
 
-Fournisseur de paiement Odoo pour encaisser par mobile money, carte bancaire et PayPal avec HapiPay : factures payées depuis le portail client, devis et boutique en ligne. L'argent va directement du client au compte opérateur de l'entreprise : HapiPay ne le touche jamais.
+Fournisseur de paiement Odoo pour encaisser par mobile money, carte bancaire et PayPal avec HapiPay : factures et devis payés en ligne depuis le portail client. La boutique en ligne (Site web) utilise le même formulaire de paiement d'Odoo, mais n'a pas encore été essayée. L'argent va directement du client au compte opérateur de l'entreprise : HapiPay ne le touche jamais.
 
 Une branche par version d'Odoo, comme pour les modules d'Odoo : `18.0` et `19.0`.
 
@@ -12,7 +12,7 @@ Une branche par version d'Odoo, comme pour les modules d'Odoo : `18.0` et `19.0`
 4. HapiPay envoie le webhook signé `paiement.reussi` à `/payment/hapipay/webhook`. Le module vérifie la signature, le montant et la devise, puis confirme la transaction : Odoo crée le paiement et lettre la facture, ou confirme la commande. Le numéro de transaction HapiPay devient la référence du fournisseur.
 5. Si le webhook n'est pas encore arrivé au retour du client, le module demande l'état de la page à HapiPay.
 
-Un paiement d'un montant ou d'une devise différente laisse la transaction « En attente », avec un message. Un paiement « à vérifier » aussi. Un paiement échoué laisse la transaction ouverte : le client peut réessayer sur la même page HapiPay. Les références d'une autre boutique branchée sur le même compte HapiPay sont ignorées.
+Un paiement d'un montant ou d'une devise différente n'est pas confirmé : Odoo 19 passe la transaction en erreur (contrôle d'Odoo lui-même), Odoo 18 la laisse « En attente » avec un message. Un paiement « à vérifier » aussi. Un paiement échoué laisse la transaction ouverte : le client peut réessayer sur la même page HapiPay. Les références d'une autre boutique branchée sur le même compte HapiPay sont ignorées.
 
 Aucun secret dans ce dépôt : chaque entreprise saisit sa propre clé d'API et le secret de son webhook.
 
@@ -33,7 +33,12 @@ La devise doit être le franc CFA (XAF, XOF), l'ariary (MGA), le franc congolais
 
 ## Essais
 
-Testé de bout en bout avec Odoo 18 et une instance HapiPay locale, en mode test : facture payée depuis le portail client (transaction confirmée, paiement créé et facture lettrée), webhook signé reçu, faux webhook refusé (401), webhook rejoué sans second paiement, montant différent laissé en attente, référence d'une autre boutique ignorée, clé vérifiée depuis la fiche du fournisseur. Les tests du module (`--test-tags /payment_hapipay`) passent.
+Testé de bout en bout avec une instance HapiPay locale, en mode test :
+
+- **Odoo 19** : facture payée depuis le portail client (paiement créé, facture lettrée), devis accepté et payé en ligne (commande confirmée), faux webhook refusé (401), webhook rejoué sans second paiement, référence d'une autre boutique ignorée.
+- **Odoo 18** : facture payée depuis le portail client, faux webhook refusé, webhook rejoué sans second paiement, montant différent laissé en attente, référence d'une autre boutique ignorée, clé vérifiée depuis la fiche du fournisseur.
+
+Les tests du module passent sur les deux versions : `odoo -i payment_hapipay --test-enable --test-tags /payment_hapipay`.
 
 ## Licence
 
