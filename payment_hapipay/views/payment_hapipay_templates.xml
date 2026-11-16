@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HapiPay pour Odoo. Licence LGPL-3. -->
+<odoo>
+
+    <!-- Envoie le client sur la page de paiement HapiPay. -->
+    <template id="redirect_form">
+        <form t-att-action="api_url" method="get"/>
+    </template>
+
+</odoo>

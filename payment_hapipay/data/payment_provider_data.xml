@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HapiPay pour Odoo. Licence LGPL-3. -->
+<odoo noupdate="1">
+
+    <record id="payment_provider_hapipay" model="payment.provider">
+        <field name="name">HapiPay</field>
+        <field name="code">hapipay</field>
+        <field name="image_128" type="base64" file="payment_hapipay/static/description/icon.png"/>
+        <field name="module_id" ref="base.module_payment_hapipay"/>
+        <field name="redirect_form_view_id" ref="redirect_form"/>
+        <field name="payment_method_ids" eval="[Command.set([ref('payment_method_hapipay')])]"/>
+    </record>
+
+</odoo>

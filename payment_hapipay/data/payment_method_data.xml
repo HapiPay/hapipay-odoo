@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HapiPay pour Odoo. Licence LGPL-3. -->
+<odoo>
+
+    <!-- Moyen de paiement affiché au client : la page HapiPay propose ensuite
+         Airtel Money, Orange Money, MVola, la carte ou PayPal. -->
+    <record id="payment_method_hapipay" model="payment.method">
+        <field name="name">HapiPay (mobile money)</field>
+        <field name="code">hapipay</field>
+        <field name="sequence">5</field>
+        <field name="image" type="base64" file="payment_hapipay/static/description/icon.png"/>
+        <field name="support_tokenization">False</field>
+        <field name="support_express_checkout">False</field>
+        <field name="support_refund">none</field>
+    </record>
+
+</odoo>

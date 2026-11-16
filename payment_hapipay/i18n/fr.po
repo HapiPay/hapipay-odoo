@@ -1,0 +1,247 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* payment_hapipay
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20261112\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-16 04:36+0000\n"
+"PO-Revision-Date: 2026-11-16 04:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid ""
+":\n"
+"                        the test environment is free. API keys and webhooks are in the Developers menu of your"
+msgstr ""
+" : l'environnement de test est gratuit. Les clés d'API et les webhooks se "
+"trouvent dans le menu Développeurs de votre"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "API address"
+msgstr "Adresse de l'API"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "API key"
+msgstr "Clé d'API"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "Check the key"
+msgstr "Vérifier la clé"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__code
+msgid "Code"
+msgstr "Code"
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid "Could not establish the connection to the API."
+msgstr "Impossible de joindre l'API."
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "Create one"
+msgstr "Créez-le"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,help:payment_hapipay.field_payment_provider__hapipay_api_key
+msgid ""
+"Created in your HapiPay space, Developers > API keys. An hpc_test_ key "
+"simulates payments; an hpc_ key collects real money."
+msgstr ""
+"Créée dans votre espace HapiPay, menu Développeurs > Clés d'API. Une clé "
+"hpc_test_ simule les paiements ; une clé hpc_ encaisse pour de vrai."
+
+#. module: payment_hapipay
+#: model:ir.model.fields.selection,name:payment_hapipay.selection__payment_provider__code__hapipay
+#: model:payment.provider,name:payment_hapipay.payment_provider_hapipay
+msgid "HapiPay"
+msgstr "HapiPay"
+
+#. module: payment_hapipay
+#: model:payment.method,name:payment_hapipay.payment_method_hapipay
+msgid "HapiPay (mobile money)"
+msgstr "HapiPay (mobile money)"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__hapipay_api_url
+msgid "HapiPay API address"
+msgstr "Adresse de l'API HapiPay"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__hapipay_api_key
+msgid "HapiPay API key"
+msgstr "Clé d'API HapiPay"
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_transaction.py:0
+msgid ""
+"HapiPay confirmed a payment of %s, which does not match this transaction. "
+"Check it in your HapiPay space."
+msgstr ""
+"HapiPay a confirmé un paiement de %s, qui ne correspond pas à cette "
+"transaction. Vérifiez-le dans votre espace HapiPay."
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "HapiPay space"
+msgstr "espace HapiPay"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__hapipay_webhook_url
+msgid "HapiPay webhook address"
+msgstr "Adresse du webhook HapiPay"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,field_description:payment_hapipay.field_payment_provider__hapipay_webhook_secret
+msgid "HapiPay webhook secret"
+msgstr "Secret du webhook HapiPay"
+
+#. module: payment_hapipay
+#: model:ir.model.fields,help:payment_hapipay.field_payment_provider__hapipay_webhook_secret
+msgid ""
+"In your HapiPay space, Developers > Webhooks, add the webhook address shown "
+"here, then copy its secret."
+msgstr ""
+"Dans votre espace HapiPay, menu Développeurs > Webhooks, ajoutez l'adresse "
+"du webhook indiquée ici, puis copiez son secret."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid "Key recognised for \"%(name)s\", in %(mode)s mode."
+msgstr "Clé reconnue pour « %(name)s », en mode %(mode)s."
+
+#. module: payment_hapipay
+#: model:ir.model.fields,help:payment_hapipay.field_payment_provider__hapipay_api_url
+msgid ""
+"Leave empty to use https://pay.scigroup.td/api/v1. The address must be "
+"HTTPS: a redirected address is refused."
+msgstr ""
+"Laissez vide pour utiliser https://pay.scigroup.td/api/v1. L'adresse doit "
+"être en HTTPS : une adresse redirigée est refusée."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_transaction.py:0
+msgid "No transaction found matching reference %s."
+msgstr "Aucune transaction ne correspond à la référence %s."
+
+#. module: payment_hapipay
+#: model:ir.model,name:payment_hapipay.model_payment_provider
+msgid "Payment Provider"
+msgstr "Fournisseur de paiement"
+
+#. module: payment_hapipay
+#: model:ir.model,name:payment_hapipay.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transaction"
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_transaction.py:0
+msgid "Received data with missing reference."
+msgstr "Données reçues sans référence."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid "The API answered %s."
+msgstr "L'API a répondu %s."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid ""
+"The API answered with a redirection (%(status)s): check the API address, in "
+"HTTPS, for example %(url)s."
+msgstr ""
+"L'API a répondu par une redirection (%(status)s) : vérifiez l'adresse de "
+"l'API, en HTTPS, par exemple %(url)s."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid "The key could not be checked: %s"
+msgstr "La clé n'a pas pu être vérifiée : %s"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid ""
+"The money paid by your customers goes straight to your own operator account:\n"
+"                        HapiPay never touches it and takes no commission.\n"
+"                        No HapiPay account yet?"
+msgstr ""
+"L'argent payé par vos clients arrive directement sur votre propre compte "
+"opérateur : HapiPay ne le touche jamais, et ne prend aucune commission. Pas "
+"encore de compte HapiPay ?"
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_transaction.py:0
+msgid ""
+"The operator did not answer clearly: HapiPay is checking this payment. Do "
+"not deliver until it is confirmed."
+msgstr ""
+"L'opérateur n'a pas répondu clairement : HapiPay vérifie ce paiement. Ne "
+"livrez pas avant sa confirmation."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_transaction.py:0
+msgid "The payment page could not be created."
+msgstr "La page de paiement n'a pas pu être créée."
+
+#. module: payment_hapipay
+#: model:ir.model.fields,help:payment_hapipay.field_payment_provider__code
+msgid "The technical code of this payment provider."
+msgstr "Le code technique de ce fournisseur de paiement."
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_transaction.py:0
+msgid "This amount has cents: HapiPay only accepts whole amounts."
+msgstr ""
+"Ce montant comporte des centimes : HapiPay n'accepte que des montants "
+"entiers."
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "Webhook address"
+msgstr "Adresse du webhook"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "Webhook secret"
+msgstr "Secret du webhook"
+
+#. module: payment_hapipay
+#: model_terms:ir.ui.view,arch_db:payment_hapipay.payment_provider_form
+msgid "https://pay.scigroup.td/api/v1"
+msgstr "https://pay.scigroup.td/api/v1"
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid "live"
+msgstr "production"
+
+#. module: payment_hapipay
+#. odoo-python
+#: code:addons/payment_hapipay/models/payment_provider.py:0
+msgid "test (simulated payments)"
+msgstr "test (paiements simulés)"
