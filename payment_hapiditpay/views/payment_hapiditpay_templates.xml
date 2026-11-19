@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- HapiPay pour Odoo. Licence LGPL-3. -->
+<!-- HapiditPay pour Odoo. Licence LGPL-3. -->
 <odoo>
 
-    <!-- Envoie le client sur la page de paiement HapiPay. -->
+    <!-- Envoie le client sur la page de paiement HapiditPay. -->
     <template id="redirect_form">
         <form t-att-action="api_url" method="get"/>
     </template>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HapiditPay pour Odoo. Licence LGPL-3. -->
+<odoo>
+
+    <!-- Moyen de paiement affiché au client : la page HapiditPay propose ensuite
+         Airtel Money, Orange Money, MVola, la carte ou PayPal. -->
+    <record id="payment_method_hapiditpay" model="payment.method">
+        <field name="name">HapiditPay (mobile money)</field>
+        <field name="code">hapiditpay</field>
+        <field name="sequence">5</field>
+        <field name="image" type="base64" file="payment_hapiditpay/static/description/icon.png"/>
+        <field name="support_tokenization">False</field>
+        <field name="support_express_checkout">False</field>
+        <field name="support_refund">none</field>
+    </record>
+
+</odoo>
