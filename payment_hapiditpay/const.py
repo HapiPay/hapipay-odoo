@@ -8,7 +8,7 @@ import time
 DEFAULT_API_URL = 'https://hapiditpay.com/api/v1'
 
 # Version du module, envoyée dans l'en-tête User-Agent.
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 
 # Devises des pages HapiditPay : celles des pays servis (FCFA, ariary, francs
 # congolais), plus l'euro et le dollar. Montants entiers seulement.

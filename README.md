@@ -31,21 +31,6 @@ Odoo installé chez vous, chez un intégrateur ou sur Odoo.sh. Odoo Online (l'of
 
 La devise doit être le franc CFA (XAF, XOF), l'ariary (MGA), le franc congolais (CDF), l'euro ou le dollar. HapiditPay encaisse des montants entiers.
 
-## Mise à jour depuis la version 0.1.x (ancien nom « HapiPay »)
-
-Jusqu'à la 0.1.0, le module s'appelait `payment_hapipay` (fournisseur « HapiPay », code `hapipay`). Odoo ne sait pas renommer un module installé : `payment_hapiditpay` s'installe donc à côté de l'ancien, reprend ses réglages, puis l'ancien est désinstallé. L'historique des transactions reste dans Odoo.
-
-1. Choisissez un moment sans paiement en cours.
-2. Gardez `payment_hapipay` installé et son dossier en place : ses réglages ne sont lisibles que tant qu'il est installé. Ajoutez le dossier `payment_hapiditpay` dans un dossier de modules, mettez à jour la liste des applications, puis installez « Payment Provider: HapiditPay ».
-3. À l'installation, pour chaque fournisseur HapiPay, le fournisseur HapiditPay de la même société reçoit l'adresse de l'API, la clé d'API, le secret du webhook, l'état (« Activé » ou « Mode test ») et la publication. L'ancien fournisseur est ensuite désactivé et dépublié : le client ne voit qu'un moyen de paiement. Un fournisseur HapiditPay déjà configuré n'est pas modifié. Dans une base à plusieurs sociétés, une société sans fournisseur HapiditPay est signalée dans le journal d'Odoo : recopiez ses réglages à la main.
-4. Ouvrez le fournisseur HapiditPay :
-   - si l'adresse de l'API était remplie, remplacez-la par `https://hapiditpay.com/api/v1`, ou videz le champ ;
-   - les clés `hpc_…` deviennent `hdp_…` : enregistrez la nouvelle clé que vous donne votre espace HapiditPay, puis « Vérifier la clé ».
-5. L'adresse du webhook change : `/payment/hapiditpay/webhook` au lieu de `/payment/hapipay/webhook`. Dans votre espace HapiditPay (Développeurs → Webhooks), modifiez l'adresse du webhook existant pour celle affichée sur la fiche du fournisseur (son secret reste le même), ou créez-en un nouveau et copiez son secret sur la fiche.
-6. Une fois les dernières transactions HapiPay en attente réglées, désinstallez `payment_hapipay` (Applications → filtre « Installées »), puis retirez son dossier.
-
-Les moyens de paiement, les vues et les traductions sont ceux du nouveau module : rien d'autre à reprendre.
-
 ## Essais
 
 Testé de bout en bout avec une instance HapiditPay locale, en mode test :
@@ -53,13 +38,14 @@ Testé de bout en bout avec une instance HapiditPay locale, en mode test :
 - **Odoo 19** : facture payée depuis le portail client (paiement créé, facture lettrée), devis accepté et payé en ligne (commande confirmée), faux webhook refusé (401), webhook rejoué sans second paiement, référence d'une autre boutique ignorée.
 - **Odoo 18** : facture payée depuis le portail client, faux webhook refusé, webhook rejoué sans second paiement, montant différent laissé en attente, référence d'une autre boutique ignorée, clé vérifiée depuis la fiche du fournisseur.
 
-Les tests du module passent sur les deux versions avec la 0.1.0 : `odoo -i payment_hapiditpay --test-enable --test-tags /payment_hapiditpay`. La version 0.2.0 (changement de nom) n'a pas encore été rejouée dans Odoo : syntaxe Python et XML vérifiées seulement, reprise des réglages comprise.
+Les tests du module passent sur les deux versions avec la 0.1.0 : `odoo -i payment_hapiditpay --test-enable --test-tags /payment_hapiditpay`. Les versions 0.2.0 et 0.2.1 n'ont pas encore été rejouées dans Odoo : syntaxe Python et XML vérifiées seulement.
 
 ## Versions
 
-Le numéro d'Odoo précède celui du module : `19.0.0.2.0` et `18.0.0.2.0` sont la version 0.2.0 pour Odoo 19 et Odoo 18.
+Le numéro d'Odoo précède celui du module : `19.0.0.2.1` et `18.0.0.2.1` sont la version 0.2.1 pour Odoo 19 et Odoo 18.
 
-- **0.2.0** : HapiPay devient HapiditPay. Module `payment_hapiditpay`, fournisseur et moyen de paiement de code `hapiditpay`, champs `hapiditpay_*`, adresses `/payment/hapiditpay/return` et `/payment/hapiditpay/webhook`, en-tête de webhook `HapiditPay-Signature`, User-Agent `HapiditPay-Odoo/0.2.0`, clés d'API `hdp_…` et `hdp_test_…`, service sur `https://hapiditpay.com`. Les réglages du fournisseur de la 0.1.x sont repris à l'installation (voir « Mise à jour depuis la version 0.1.x »).
+- **0.2.1** : retrait du code de reprise des réglages d'une version antérieure : une installation précédente se reconfigure depuis la page de réglages.
+- **0.2.0** : changement de nom : le module s'appelle désormais HapiditPay. Module `payment_hapiditpay`, fournisseur et moyen de paiement de code `hapiditpay`, champs `hapiditpay_*`, adresses `/payment/hapiditpay/return` et `/payment/hapiditpay/webhook`, en-tête de webhook `HapiditPay-Signature`, clés d'API `hdp_…` et `hdp_test_…`, service sur `https://hapiditpay.com`.
 - **0.1.0** : première version. Factures et devis payés depuis le portail client ; Odoo 18 et Odoo 19.
 
 ## Licence
