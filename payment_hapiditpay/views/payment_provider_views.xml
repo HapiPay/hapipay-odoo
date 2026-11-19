@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HapiditPay pour Odoo. Licence LGPL-3. -->
+<odoo>
+
+    <record id="payment_provider_form" model="ir.ui.view">
+        <field name="name">HapiditPay Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position="inside">
+                <group invisible="code != 'hapiditpay'" name="hapiditpay_credentials">
+                    <div class="alert alert-info" role="status" colspan="2">
+                        The money paid by your customers goes straight to your own operator account:
+                        HapiditPay never touches it and takes no commission.
+                        No HapiditPay account yet? <a href="https://hapiditpay.com/portail/register" target="_blank">Create one</a>:
+                        the test environment is free. API keys and webhooks are in the Developers menu of your
+                        <a href="https://hapiditpay.com/portail" target="_blank">HapiditPay space</a>.
+                    </div>
+                    <field name="hapiditpay_api_url" string="API address"
+                           placeholder="https://hapiditpay.com/api/v1"/>
+                    <field name="hapiditpay_api_key" string="API key"
+                           required="code == 'hapiditpay' and state != 'disabled'" password="True"/>
+                    <field name="hapiditpay_webhook_url" string="Webhook address" readonly="1" widget="CopyClipboardChar"/>
+                    <field name="hapiditpay_webhook_secret" string="Webhook secret"
+                           required="code == 'hapiditpay' and state != 'disabled'" password="True"/>
+                    <button name="action_hapiditpay_check_key" type="object" string="Check the key"
+                            class="btn-secondary" colspan="2"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

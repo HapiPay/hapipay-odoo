@@ -1,26 +1,26 @@
-# HapiPay pour Odoo. Licence LGPL-3.
+# HapiditPay pour Odoo. Licence LGPL-3.
 
 import hashlib
 import hmac
 import time
 
 # Adresse de l'API de production, utilisée quand le réglage est vide.
-DEFAULT_API_URL = 'https://pay.scigroup.td/api/v1'
+DEFAULT_API_URL = 'https://hapiditpay.com/api/v1'
 
 # Version du module, envoyée dans l'en-tête User-Agent.
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 
-# Devises des pages HapiPay : celles des pays servis (FCFA, ariary, francs
+# Devises des pages HapiditPay : celles des pays servis (FCFA, ariary, francs
 # congolais), plus l'euro et le dollar. Montants entiers seulement.
 SUPPORTED_CURRENCIES = ['XAF', 'XOF', 'MGA', 'CDF', 'EUR', 'USD']
 
-# Langues de la page HapiPay.
+# Langues de la page HapiditPay.
 LANGUAGES = ['fr', 'en', 'ar', 'mg', 'es']
 
-# Moyen de paiement créé par le module, activé avec HapiPay.
-DEFAULT_PAYMENT_METHOD_CODES = {'hapipay'}
+# Moyen de paiement créé par le module, activé avec HapiditPay.
+DEFAULT_PAYMENT_METHOD_CODES = {'hapiditpay'}
 
-# Préfixe des références envoyées à HapiPay : un même compte HapiPay peut
+# Préfixe des références envoyées à HapiditPay : un même compte HapiditPay peut
 # servir une boutique et un Odoo sans que leurs références se mêlent.
 REFERENCE_PREFIX = 'odoo-'
 
@@ -29,11 +29,11 @@ SIGNATURE_TOLERANCE = 300
 
 
 def valid_signature(header, raw_body, secret, tolerance=SIGNATURE_TOLERANCE, now=None):
-    """Vérifie l'en-tête HapiPay-Signature : t=<horodatage>,v1=<hmac>[,v1=<hmac>].
+    """Vérifie l'en-tête HapiditPay-Signature : t=<horodatage>,v1=<hmac>[,v1=<hmac>].
 
     Deux v1 pendant les 24 h qui suivent un changement de secret : l'un suffit.
 
-    :param str header: valeur de l'en-tête HapiPay-Signature
+    :param str header: valeur de l'en-tête HapiditPay-Signature
     :param bytes raw_body: corps brut de la requête
     :param str secret: secret du webhook
     :rtype: bool

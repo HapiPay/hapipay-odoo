@@ -1,4 +1,4 @@
-# HapiPay pour Odoo. Licence LGPL-3.
+# HapiditPay pour Odoo. Licence LGPL-3.
 
 import hashlib
 import hmac
@@ -12,9 +12,9 @@ from odoo.tools import mute_logger
 
 from odoo.addons.payment.tests.common import PaymentCommon
 from odoo.addons.payment.tests.http_common import PaymentHttpCommon
-from odoo.addons.payment_hapipay import const
+from odoo.addons.payment_hapiditpay import const
 
-MAKE_REQUEST = 'odoo.addons.payment_hapipay.models.payment_provider.PaymentProvider._hapipay_make_request'
+MAKE_REQUEST = 'odoo.addons.payment_hapiditpay.models.payment_provider.PaymentProvider._hapiditpay_make_request'
 SECRET = 'whsec_essai'
 
 
@@ -24,23 +24,23 @@ def signature(body, secret=SECRET, timestamp=None):
     return f't={timestamp},v1={digest}'
 
 
-class HapiPayCommon(PaymentCommon):
+class HapiditPayCommon(PaymentCommon):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.provider = cls._prepare_provider('hapipay', update_values={
-            'hapipay_api_key': 'hpc_test_abcdefghijkl_' + 'x' * 40,
-            'hapipay_webhook_secret': SECRET,
+        cls.provider = cls._prepare_provider('hapiditpay', update_values={
+            'hapiditpay_api_key': 'hdp_test_abcdefghijkl_' + 'x' * 40,
+            'hapiditpay_webhook_secret': SECRET,
         })
         cls.currency = cls._enable_currency('XAF')
         cls.amount = 25000
-        cls.payment_method_id = cls.env.ref('payment_hapipay.payment_method_hapipay').id
+        cls.payment_method_id = cls.env.ref('payment_hapiditpay.payment_method_hapiditpay').id
 
     def _paid(self, tx, **values):
         return dict({
             'evenement': 'paiement.reussi',
-            'reference': tx._hapipay_reference(),
+            'reference': tx._hapiditpay_reference(),
             'id': 'TX123',
             'montant': 25000,
             'devise': 'XAF',
@@ -49,7 +49,7 @@ class HapiPayCommon(PaymentCommon):
 
 
 @tagged('post_install', '-at_install')
-class TestHapiPay(HapiPayCommon):
+class TestHapiditPay(HapiditPayCommon):
 
     def test_signature(self):
         body = b'{"evenement":"paiement.reussi"}'
@@ -70,11 +70,11 @@ class TestHapiPay(HapiPayCommon):
 
     def test_reference_round_trip(self):
         tx = self._create_transaction(flow='redirect')
-        hapipay_reference = tx._hapipay_reference()
-        self.assertTrue(hapipay_reference.startswith('odoo-'))
-        self.assertEqual(tx._hapipay_odoo_reference(hapipay_reference), tx.reference)
-        self.assertIsNone(tx._hapipay_odoo_reference('ps-42'))
-        self.assertIsNone(tx._hapipay_odoo_reference('odoo-zzzzzz-' + tx.reference))
+        hapiditpay_reference = tx._hapiditpay_reference()
+        self.assertTrue(hapiditpay_reference.startswith('odoo-'))
+        self.assertEqual(tx._hapiditpay_odoo_reference(hapiditpay_reference), tx.reference)
+        self.assertIsNone(tx._hapiditpay_odoo_reference('ps-42'))
+        self.assertIsNone(tx._hapiditpay_odoo_reference('odoo-zzzzzz-' + tx.reference))
 
     def test_rendering_values_create_the_page(self):
         tx = self._create_transaction(flow='redirect')
@@ -87,8 +87,8 @@ class TestHapiPay(HapiPayCommon):
         self.assertEqual(payload['montant'], 25000)
         self.assertEqual(payload['devise'], 'XAF')
         self.assertTrue(payload['usage_unique'])
-        self.assertEqual(payload['reference'], tx._hapipay_reference())
-        self.assertIn('/payment/hapipay/return?reference=', payload['url_retour'])
+        self.assertEqual(payload['reference'], tx._hapiditpay_reference())
+        self.assertIn('/payment/hapiditpay/return?reference=', payload['url_retour'])
 
     def test_amount_with_cents_is_refused(self):
         # En FCFA, Odoo arrondit déjà à l'unité : seuls l'euro et le dollar ont des centimes.
@@ -101,46 +101,46 @@ class TestHapiPay(HapiPayCommon):
 
     def test_api_refusal_is_an_error(self):
         tx = self._create_transaction(flow='redirect')
-        with patch(MAKE_REQUEST, side_effect=ValidationError("HapiPay: refus")):
+        with patch(MAKE_REQUEST, side_effect=ValidationError("HapiditPay: refus")):
             self.assertEqual(tx._get_specific_rendering_values(None), {})
         self.assertEqual(tx.state, 'error')
 
     def test_paid_notification_confirms(self):
         tx = self._create_transaction(flow='redirect')
-        tx._process('hapipay', self._paid(tx))
+        tx._process('hapiditpay', self._paid(tx))
         self.assertEqual(tx.state, 'done')
         self.assertEqual(tx.provider_reference, 'TX123')
 
     def test_other_amount_is_an_error(self):
         # Odoo 19 vérifie lui-même le montant et la devise : un écart passe la transaction en erreur.
         tx = self._create_transaction(flow='redirect')
-        tx._process('hapipay', self._paid(tx, montant=24000))
+        tx._process('hapiditpay', self._paid(tx, montant=24000))
         self.assertEqual(tx.state, 'error')
         tx2 = self._create_transaction(flow='redirect', reference='autre-ref')
-        tx2._process('hapipay', self._paid(tx2, devise='EUR'))
+        tx2._process('hapiditpay', self._paid(tx2, devise='EUR'))
         self.assertEqual(tx2.state, 'error')
 
     def test_payment_to_check_stays_pending(self):
         tx = self._create_transaction(flow='redirect')
-        tx._process('hapipay', self._paid(tx, evenement='paiement.a_verifier'))
+        tx._process('hapiditpay', self._paid(tx, evenement='paiement.a_verifier'))
         self.assertEqual(tx.state, 'pending')
 
     def test_failed_payment_keeps_the_transaction_open(self):
         tx = self._create_transaction(flow='redirect')
-        tx._process('hapipay', self._paid(tx, evenement='paiement.echoue'))
+        tx._process('hapiditpay', self._paid(tx, evenement='paiement.echoue'))
         self.assertEqual(tx.state, 'draft')
 
-    def test_return_asks_hapipay(self):
+    def test_return_asks_hapiditpay(self):
         tx = self._create_transaction(flow='redirect', provider_reference='abc')
-        link = {'etat': 'paye', 'reference': tx._hapipay_reference(), 'paiement': 'TX9', 'montant': 25000, 'devise': 'XAF'}
+        link = {'etat': 'paye', 'reference': tx._hapiditpay_reference(), 'paiement': 'TX9', 'montant': 25000, 'devise': 'XAF'}
         with patch(MAKE_REQUEST, return_value=link):
-            tx._hapipay_check_link_state()
+            tx._hapiditpay_check_link_state()
         self.assertEqual(tx.state, 'done')
 
     def test_return_before_payment_sets_pending(self):
         tx = self._create_transaction(flow='redirect', provider_reference='abc')
         with patch(MAKE_REQUEST, return_value={'etat': 'ouvert'}):
-            tx._hapipay_check_link_state()
+            tx._hapiditpay_check_link_state()
         self.assertEqual(tx.state, 'pending')
 
     def test_no_validation_operation(self):
@@ -151,15 +151,15 @@ class TestHapiPay(HapiPayCommon):
 
 
 @tagged('post_install', '-at_install')
-class TestHapiPayWebhook(HapiPayCommon, PaymentHttpCommon):
+class TestHapiditPayWebhook(HapiditPayCommon, PaymentHttpCommon):
 
     def _post(self, body, header):
         return self.url_open(
-            '/payment/hapipay/webhook', data=body,
-            headers={'Content-Type': 'application/json', 'HapiPay-Signature': header},
+            '/payment/hapiditpay/webhook', data=body,
+            headers={'Content-Type': 'application/json', 'HapiditPay-Signature': header},
         )
 
-    @mute_logger('odoo.addons.payment_hapipay.controllers.main')
+    @mute_logger('odoo.addons.payment_hapiditpay.controllers.main')
     def test_forged_webhook_is_refused(self):
         tx = self._create_transaction(flow='redirect')
         body = json.dumps({'evenement': 'paiement.reussi', 'data': self._paid(tx)}).encode()

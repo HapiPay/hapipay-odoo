@@ -1,4 +1,4 @@
-# HapiPay pour Odoo. Licence LGPL-3.
+# HapiditPay pour Odoo. Licence LGPL-3.
 
 import json
 import logging
@@ -6,41 +6,41 @@ import logging
 from odoo import http
 from odoo.http import request
 
-from odoo.addons.payment_hapipay import const
+from odoo.addons.payment_hapiditpay import const
 
 
 _logger = logging.getLogger(__name__)
 
 
-class HapiPayController(http.Controller):
-    _return_url = '/payment/hapipay/return'
-    _webhook_url = '/payment/hapipay/webhook'
+class HapiditPayController(http.Controller):
+    _return_url = '/payment/hapiditpay/return'
+    _webhook_url = '/payment/hapiditpay/webhook'
 
     @http.route(_return_url, type='http', methods=['GET'], auth='public')
-    def hapipay_return(self, reference=None, **kwargs):
-        """ Retour du client après la page HapiPay.
+    def hapiditpay_return(self, reference=None, **kwargs):
+        """ Retour du client après la page HapiditPay.
 
-        Les paramètres ajoutés par HapiPay (?paiement=…&statut=…) ne sont qu'une
-        indication : l'état est demandé à HapiPay, de serveur à serveur.
+        Les paramètres ajoutés par HapiditPay (?paiement=…&statut=…) ne sont qu'une
+        indication : l'état est demandé à HapiditPay, de serveur à serveur.
         """
         tx_sudo = request.env['payment.transaction'].sudo().search([
-            ('reference', '=', reference or ''), ('provider_code', '=', 'hapipay'),
+            ('reference', '=', reference or ''), ('provider_code', '=', 'hapiditpay'),
         ], limit=1)
         if tx_sudo and tx_sudo.state in ('draft', 'pending'):
-            tx_sudo._hapipay_check_link_state()
+            tx_sudo._hapiditpay_check_link_state()
         return request.redirect('/payment/status')
 
     @http.route(_webhook_url, type='http', methods=['POST'], auth='public', csrf=False)
-    def hapipay_webhook(self):
-        """ Webhooks HapiPay. La signature HapiPay-Signature tient lieu d'authentification. """
+    def hapiditpay_webhook(self):
+        """ Webhooks HapiditPay. La signature HapiditPay-Signature tient lieu d'authentification. """
         raw = request.httprequest.get_data()
-        header = request.httprequest.headers.get('HapiPay-Signature', '')
+        header = request.httprequest.headers.get('HapiditPay-Signature', '')
 
         secrets = request.env['payment.provider'].sudo().search([
-            ('code', '=', 'hapipay'), ('hapipay_webhook_secret', '!=', False),
-        ]).mapped('hapipay_webhook_secret')
+            ('code', '=', 'hapiditpay'), ('hapiditpay_webhook_secret', '!=', False),
+        ]).mapped('hapiditpay_webhook_secret')
         if not any(const.valid_signature(header, raw, secret) for secret in secrets):
-            _logger.warning("HapiPay : webhook à la signature invalide")
+            _logger.warning("HapiditPay : webhook à la signature invalide")
             return request.make_json_response({'message': "Signature invalide."}, status=401)
 
         try:
@@ -55,12 +55,12 @@ class HapiPayController(http.Controller):
             return request.make_json_response({'ok': True})
 
         transactions = request.env['payment.transaction'].sudo()
-        if not transactions._hapipay_odoo_reference(data.get('reference')):
+        if not transactions._hapiditpay_odoo_reference(data.get('reference')):
             # Pas une transaction de cet Odoo (une boutique sur le même compte, par exemple) :
             # on accuse réception pour éviter les relances.
             return request.make_json_response({'ignore': True})
 
-        tx_sudo = transactions._process('hapipay', dict(data, evenement=name))
+        tx_sudo = transactions._process('hapiditpay', dict(data, evenement=name))
         if not tx_sudo:
             # Référence de cet Odoo, mais transaction introuvable : accusé de réception quand même.
             return request.make_json_response({'ignore': True})
