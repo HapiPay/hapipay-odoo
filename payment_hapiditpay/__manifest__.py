@@ -2,7 +2,7 @@
 
 {
     'name': "Payment Provider: HapiditPay",
-    'version': '19.0.0.2.0',
+    'version': '19.0.0.2.1',
     'category': 'Accounting/Payment Providers',
     'sequence': 350,
     'summary': "Mobile money, card and PayPal payments with HapiditPay. The money goes straight to "
